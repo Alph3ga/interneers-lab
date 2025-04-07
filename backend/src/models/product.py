@@ -14,7 +14,8 @@ Product document schema (and associated managing functions)
 import datetime
 from mongoengine import Document, StringField, IntField, DateTimeField
 from mongoengine.errors import ValidationError, DoesNotExist
-
+from src.models.product_category import ProductCategory
+from src.services.product_category_service import ProductCategoryService
 from src.utils.validation import validate_category
 
 class Product(Document):
