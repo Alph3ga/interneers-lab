@@ -2,6 +2,7 @@ from src.models.product_category import ProductCategory
 from mongoengine.errors import ValidationError, DoesNotExist
 
 #pylint: disable=no-member
+
 def validate_category(category_title: str):
     """
     Validates if the input string is a valid category title.
