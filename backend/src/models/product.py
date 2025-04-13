@@ -24,6 +24,13 @@ class Product(Document):
     created_at= DateTimeField(default= lambda: datetime.datetime.now(datetime.timezone.utc))
     modified_at= DateTimeField(default= lambda: datetime.datetime.now(datetime.timezone.utc))
 
+    meta = {
+        'indexes': [
+            'name',
+            'quantity',
+        ]
+    }
+
     def modify_stock(self, amount: int):
         """
         Updates the product stock by increasing its quantity by the specified amount (integer).
