@@ -149,10 +149,12 @@ def create_product(data: dict)-> Product:
     Returns:
         Created Product instance.
     """
-    return Product(
+    product= Product(
         name=data["name"],
         price=data["price"],
         quantity=data["quantity"],
         brand=data.get("brand", ""),  # Default to an empty string
         description=data.get("description", "")  # Default to an empty string
-    ).save()
+    )
+    product.save()
+    return product
