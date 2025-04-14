@@ -1,4 +1,3 @@
-
 import datetime
 from mongoengine import Document, StringField
 
@@ -9,4 +8,11 @@ class ProductCategory(Document):
     Each category has a title and an optional description.
     """
     title = StringField(required=True, unique=True)
+    description = StringField(max_length=250)
+
+    meta = {
+        'indexes': [
+            'title',
+        ]
+    }
     description = StringField(max_length=250)
