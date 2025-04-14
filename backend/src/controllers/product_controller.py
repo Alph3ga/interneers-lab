@@ -16,8 +16,6 @@ from backend.src.models.product import create_product, Product
 
 from mongoengine.errors import DoesNotExist, ValidationError
 
-products= []
-
 
 def product_endpoint(request: HttpRequest, request_id: str= None):
     """
@@ -181,7 +179,7 @@ def get_product_paginated(request: HttpRequest):
         "navigation":{
             "self": f"{request.path}/?start={start_id}&limit={limit}",
             "next": f"{request.path}/?start={end_index}&limit={limit}" \
-                if end_index<len(products) else None,
+                if end_index<num_products else None,
             "prev": f"{request.path}/?start={prev_index}&limit={limit}" \
                 if prev_index>-1 else None,
             "pages": pages,

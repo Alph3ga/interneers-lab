@@ -13,6 +13,9 @@ Product document schema (and associated managing functions)
 
 import datetime
 from mongoengine import Document, StringField, IntField, DateTimeField
+from mongoengine.errors import ValidationError, DoesNotExist
+
+from src.utils.validation import validate_category
 
 class Product(Document):
     name= StringField(required= True)
@@ -20,6 +23,7 @@ class Product(Document):
     brand= StringField()
     quantity= IntField(required= True)
     description= StringField(max_length= 250)
+    category= StringField(max_length= 250, validation= validate_category)
 
     created_at= DateTimeField(default= lambda: datetime.datetime.now(datetime.timezone.utc))
     modified_at= DateTimeField(default= lambda: datetime.datetime.now(datetime.timezone.utc))
