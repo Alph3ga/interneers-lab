@@ -15,3 +15,4 @@ class ProductCategory(Document):
             'title',
         ]
     }
+    description = StringField(max_length=250)
