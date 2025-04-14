@@ -33,6 +33,8 @@ class Product(Document):
         'indexes': [
             'name',
             'quantity',
+            'category',
+            'price',
         ]
     }
 
