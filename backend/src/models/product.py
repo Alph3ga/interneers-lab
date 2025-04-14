@@ -17,11 +17,12 @@ from mongoengine.errors import ValidationError, DoesNotExist
 
 from src.utils.validation import validate_category
 
+from src.utils.validation import validate_category
 class Product(Document):
     name= StringField(required= True)
-    price= IntField(required= True)
+    price= IntField(required= True, min_value=0)
     brand= StringField()
-    quantity= IntField(required= True)
+    quantity= IntField(required= True, min_value=0)
     description= StringField(max_length= 250)
     category= StringField(max_length= 250, validation= validate_category)
 
@@ -158,10 +159,12 @@ def create_product(data: dict)-> Product:
     Returns:
         Created Product instance.
     """
-    return Product(
+    product= Product(
         name=data["name"],
         price=data["price"],
         quantity=data["quantity"],
         brand=data.get("brand", ""),  # Default to an empty string
         description=data.get("description", "")  # Default to an empty string
-    ).save()
+    )
+    product.save()
+    return product

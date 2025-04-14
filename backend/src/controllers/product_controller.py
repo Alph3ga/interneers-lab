@@ -75,8 +75,6 @@ def add_product(request: HttpRequest):
 
     product= create_product(data)
 
-    product.save()  # TODO: validation error
-
     response= JsonResponse(json.loads(product.to_json()), safe=False)
     response.status_code= 201
     response.headers["Location"]= f"/products/{product.id}"  # Location of resource
@@ -125,7 +123,7 @@ def get_product_paginated(request: HttpRequest):
     
     Returns:
         JsonResponse instance, with payload containing json representation of requested object.
-        Successful response code is 200. Payload also contains navigation details in the form
+        Successful response code is 206. Payload also contains navigation details in the form
         {
             self: URI of current page
             next: URI of next page
@@ -172,21 +170,21 @@ def get_product_paginated(request: HttpRequest):
     # in case there are less than limit products before the current start,
     # prev link always points to the page starting from the first product
     # i.e., the product with the lowest existing id
-    prev_index= start_index- limit if start_index>=limit else 0
+    prev_index= start_index- limit if start_index>=limit else -1
 
     response= JsonResponse({
         "data":json.loads(Product.objects[start_index:end_index].to_json()),
         "navigation":{
-            "self": f"{request.path}/?start={start_id}&limit={limit}",
-            "next": f"{request.path}/?start={end_index}&limit={limit}" \
+            "self": f"{request.path}?start={start_id}&limit={limit}",
+            "next": f"{request.path}?start={end_index}&limit={limit}" \
                 if end_index<num_products else None,
-            "prev": f"{request.path}/?start={prev_index}&limit={limit}" \
+            "prev": f"{request.path}?start={prev_index}&limit={limit}" \
                 if prev_index>-1 else None,
             "pages": pages,
             "current": math.ceil((start_index+1)/limit)
         }
     }, safe= False)
-    response.status_code= 206  # Partial content
+    response.status_code= 206 if num_products>limit else 200 # Partial content
     return response
 
 
@@ -216,8 +214,8 @@ def update_product(request: HttpRequest, request_id: int):
     # Modify each key specified in the request
     for key in data.keys():
         if key=="id":
-            details: "Product ID cannot be updated"
-            suggestion: "Remove 'id' field from your request, or check if it matches the URI"
+            details= "Product ID cannot be updated"
+            suggestion= "Remove 'id' field from your request, or check if it matches the URI"
             return generate_error_response(request, 400, details, suggestion)
     request_product.modify_fields(data)
 
