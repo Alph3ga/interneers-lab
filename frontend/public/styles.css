@@ -1,0 +1,122 @@
+/* Navigation Bar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #007BFF;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+  
+.navbar-title {
+font-size: 1.5em;
+font-weight: bold;
+letter-spacing: 1px;    
+}
+  
+
+/* Reset and base styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 80px; /* added to prevent overlap */
+    height: 100vh;
+    margin: 0;
+}
+  
+  /* Product Tile Container */
+.product-tile {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 700px;
+    display: flex;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+  
+.product-image {
+    width: 300px;
+    height: auto;
+    object-fit: cover;
+}
+  
+.product-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+  
+  /* Hover effect */
+.product-tile:hover {
+    transform: scale(1.03);
+}
+  
+  
+  /* Product Title */
+.product-title {
+    font-size: 1.4em;
+    margin-bottom: 6px;
+    color: #333;
+}
+  
+  /* Category and Brand */
+.product-category,
+.product-brand {
+    font-size: 0.9em;
+    color: #666;
+    margin: 4px 0;
+}
+  
+  /* Description */
+.product-description {
+    font-size: 0.95em;
+    color: #555;
+    margin: 8px 0 12px;
+}
+  
+  /* Price */
+.product-price {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #007BFF;
+    margin-bottom: 12px;
+}
+  
+  /* Quantity Field */
+.product-quantity {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+  
+.product-quantity label {
+    font-size: 0.95em;
+    color: #444;
+}
+  
+.product-quantity input[type="number"] {
+    width: 60px;
+    padding: 4px 6px;
+    font-size: 0.95em;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+  
+  /* Available stock note */
+.available {
+    font-size: 0.85em;
+    color: #777;
+}
+  
