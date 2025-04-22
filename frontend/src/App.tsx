@@ -1,5 +1,6 @@
 import React from "react";
-import Product from "components/Product";
+import ProductList from "components/ProductList";
+import Navbar from "components/Navbar";
 
 const product = {
   name: "Bajaj DMH90 Neo 90L Desert Air Cooler",
@@ -9,14 +10,16 @@ const product = {
     "Air Cooler for Home | For Larger Room | BIG ICE Chamber | Anti-Bacterial Honeycomb Pads",
   category: "Home & Kitchen",
   brand: "Bajaj",
+  image: "https://m.media-amazon.com/images/I/517a44v7f2L._SL1500_.jpg",
 };
 
-const image = "https://m.media-amazon.com/images/I/517a44v7f2L._SL1500_.jpg";
+const products = Array(15).fill(product);
 
 const App: React.FC = () => {
   return (
     <div>
-      <Product product={product} image={image} />
+      <Navbar />
+      <ProductList products={products} />
     </div>
   );
 };

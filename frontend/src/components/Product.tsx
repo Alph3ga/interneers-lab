@@ -9,11 +9,11 @@ interface ProductProps {
     description: string;
     category: string;
     brand: string;
+    image: string;
   };
-  image: string;
 }
 
-const Product: React.FC<ProductProps> = ({ product, image }) => {
+const Product: React.FC<ProductProps> = ({ product }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const toggleDetails = () => {
@@ -22,7 +22,7 @@ const Product: React.FC<ProductProps> = ({ product, image }) => {
 
   return (
     <div className={`product-tile ${!expanded ? "collapsed" : ""}`}>
-      <img src={image} alt={product.name} className="product-image" />
+      <img src={product.image} alt={product.name} className="product-image" />
       <div className="product-content">
         <div className="product-title" onClick={toggleDetails}>
           {product.name}
