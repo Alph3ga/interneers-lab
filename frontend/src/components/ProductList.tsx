@@ -44,9 +44,17 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
     }
   };
 
+  // Calculate "Displaying x to y of z products"
+  const totalProducts = products.length;
+  const displayFrom = indexOfFirstProduct + 1;
+  const displayTo = Math.min(indexOfLastProduct, totalProducts);
+
   return (
     <div>
       <div className="product-list">
+        <div className="display-info">
+          Displaying {displayFrom} to {displayTo} of {totalProducts} products
+        </div>
         {currentProducts.map((product) => (
           <Product product={product} />
         ))}
