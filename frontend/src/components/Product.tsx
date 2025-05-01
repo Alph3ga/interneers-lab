@@ -20,8 +20,16 @@ const Product: React.FC<ProductProps> = ({ product }) => {
     setExpanded((prev) => !prev);
   };
 
+  const handleEdit = () => {
+    console.log("Edit page requested on product ", product.name);
+    // Route to edit page
+  };
+
   return (
     <div className={`product-tile ${!expanded ? "collapsed" : ""}`}>
+      <button className="edit-button" onClick={handleEdit}>
+        ✎ Edit
+      </button>
       <img src={product.image} alt={product.name} className="product-image" />
       <div className="product-content">
         <div className="product-title" onClick={toggleDetails}>
