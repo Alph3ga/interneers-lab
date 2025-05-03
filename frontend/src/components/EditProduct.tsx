@@ -8,6 +8,7 @@ import {
   InputLabel,
   Typography,
   Box,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 
@@ -41,7 +42,10 @@ const categories = [
 
 const EditProduct = ({ productId }: { productId: string }) => {
   const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<Boolean>(true);
+
+  const [successMessage, setSuccessMessage] = useState<String | null>(null);
+  const [errorMessage, setErrorMessage] = useState<String | null>(null);
 
   useEffect(() => {
     axios.get(`http://localhost:8080/products/${productId}`).then((res) => {
@@ -56,6 +60,10 @@ const EditProduct = ({ productId }: { productId: string }) => {
 
   const handleSave = async () => {
     if (!product) return;
+
+    setSuccessMessage(null);
+    setErrorMessage(null);
+
     try {
       const response = await axios.patch(
         `http://localhost:8080/products/${productId}`,
@@ -70,14 +78,21 @@ const EditProduct = ({ productId }: { productId: string }) => {
       );
 
       if (response.status === 204) {
-        alert("Product updated");
+        setSuccessMessage("Product updated successfully.");
+      } else {
+        setErrorMessage(
+          "Unexpected response from server. Status code: " + response.status,
+        );
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (!error?.response) {
-          alert("Server returned status code " + error?.response?.status);
+          setErrorMessage(
+            "Server returned status code " + error?.response?.status,
+          );
         }
       }
+      setErrorMessage("Server error.");
       console.error("Failed to update product:", error);
     }
   };
@@ -89,6 +104,18 @@ const EditProduct = ({ productId }: { productId: string }) => {
       <Typography variant="h5" gutterBottom>
         Edit Product {productId}
       </Typography>
+
+      {successMessage && (
+        <Alert severity="success" onClose={() => setSuccessMessage("")}>
+          {successMessage}
+        </Alert>
+      )}
+
+      {errorMessage && (
+        <Alert severity="error" onClose={() => setErrorMessage("")}>
+          {errorMessage}
+        </Alert>
+      )}
 
       <TextField
         fullWidth
