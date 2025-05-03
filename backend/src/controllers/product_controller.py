@@ -10,6 +10,7 @@ Rest are functions that implement specific method endpoints, or helper functions
 import json
 import math
 from django.http import HttpRequest, JsonResponse
+from rest_framework_mongoengine import serializers
 from src.utils.error import generate_error_response
 
 from src.models.product import create_product, Product
@@ -134,7 +135,7 @@ def get_product_paginated(request: HttpRequest):
     """
 
     try:
-        start_id= int(request.GET.get("start", "0"))
+        start_index= int(request.GET.get("start", "0"))
     except ValueError:
         details= f"start parameter {request.GET.get("start", "0")} could not be " \
             "converted to integer"
@@ -158,7 +159,6 @@ def get_product_paginated(request: HttpRequest):
         return generate_error_response(request, 400, details, suggestion)
 
     # Find the index in the list to start from (if the ID exists)
-    start_index= start_id
 
     num_products= Product.objects.count()
 
@@ -172,10 +172,16 @@ def get_product_paginated(request: HttpRequest):
     # i.e., the product with the lowest existing id
     prev_index= start_index- limit if start_index>=limit else -1
 
+    class TestSerializer(serializers.DocumentSerializer):
+        class Meta:
+            model= Product
+            fields= '__all__'
+
     response= JsonResponse({
-        "data":json.loads(Product.objects[start_index:end_index].to_json()),
+        "data": [TestSerializer(prod).data for prod in  \
+            Product.objects[start_index:end_index]],
         "navigation":{
-            "self": f"{request.path}?start={start_id}&limit={limit}",
+            "self": f"{request.path}?start={start_index}&limit={limit}",
             "next": f"{request.path}?start={end_index}&limit={limit}" \
                 if end_index<num_products else None,
             "prev": f"{request.path}?start={prev_index}&limit={limit}" \
