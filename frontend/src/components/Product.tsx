@@ -16,14 +16,17 @@ interface ProductProps {
 }
 
 const Product: React.FC<ProductProps> = ({ product }) => {
+  // State to track if details are expanded
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const toggleDetails = () => {
     setExpanded((prev) => !prev);
   };
 
+  // Required for programmatic navigation
   const navigate = useNavigate();
 
+  // Redirects to the edit product page on clicking the button
   const handleEdit = () => {
     const id = product.id;
     navigate("/product/" + id);
