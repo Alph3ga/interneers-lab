@@ -17,6 +17,7 @@ function App() {
     </Router>
   );
 }
+// Wrapper to extract product ID from the URL slug
 const EditPageWrapper = () => {
   const params = useParams();
   return <EditProduct productId={params.id!} />;
