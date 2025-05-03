@@ -10,6 +10,7 @@ Rest are functions that implement specific method endpoints, or helper functions
 import json
 import math
 from django.http import HttpRequest, JsonResponse
+from rest_framework_mongoengine import serializers
 from src.utils.error import generate_error_response
 
 from src.models.product import create_product, Product
@@ -179,6 +180,11 @@ def get_product_paginated(request: HttpRequest):
     # prev link always points to the page starting from the first product
     # i.e., the product with the lowest existing id
     prev_index= start_index- limit if start_index>=limit else -1
+
+    class TestSerializer(serializers.DocumentSerializer):
+        class Meta:
+            model= Product
+            fields= '__all__'
 
     response= JsonResponse({
         "data":json.loads(data[start_index:end_index].to_json()),
