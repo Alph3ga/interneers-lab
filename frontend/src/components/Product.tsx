@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "styles/styles.css";
 
 interface ProductProps {
   product: {
+    id: string;
     name: string;
     price: number;
     quantity: number;
@@ -20,9 +22,11 @@ const Product: React.FC<ProductProps> = ({ product }) => {
     setExpanded((prev) => !prev);
   };
 
+  const navigate = useNavigate();
+
   const handleEdit = () => {
-    console.log("Edit page requested on product ", product.name);
-    // Route to edit page
+    const id = product.id;
+    navigate("/product/" + id);
   };
 
   return (
