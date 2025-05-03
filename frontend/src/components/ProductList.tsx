@@ -3,6 +3,7 @@ import Product from "./Product";
 import "styles/productlist.css";
 
 interface ProductData {
+  id: string;
   name: string;
   price: number;
   quantity: number;
@@ -12,67 +13,29 @@ interface ProductData {
   image: string;
 }
 
-interface ProductListProps {
-  products: ProductData[];
+interface Navigation {
+  self: string;
+  next: string | null;
+  prev: string | null;
+  pages: number;
+  current: number;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products }) => {
-  const itemsPerPage = 10; // Number of products per page
-  const [currentPage, setCurrentPage] = useState(1); // Current page state
+interface ProductListProps {
+  products: ProductData[];
+  navigation: Navigation | null;
+}
 
-  // Calculate the index range for the current page
-  const indexOfLastProduct = currentPage * itemsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct,
-  );
-
-  // Handle next page click
-  const handleNextPage = () => {
-    if (currentPage * itemsPerPage < products.length) {
-      setCurrentPage(currentPage + 1);
-      window.scrollTo(0, 0); // Scroll to top when next page is clicked
-    }
-  };
-
-  // Handle previous page click
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-      window.scrollTo(0, 0); // Scroll to top when previous page is clicked
-    }
-  };
-
-  // Calculate "Displaying x to y of z products"
-  const totalProducts = products.length;
-  const displayFrom = indexOfFirstProduct + 1;
-  const displayTo = Math.min(indexOfLastProduct, totalProducts);
-
+const ProductList: React.FC<ProductListProps> = ({ products, navigation }) => {
   return (
     <div>
       <div className="product-list">
         <div className="display-info">
-          Displaying {displayFrom} to {displayTo} of {totalProducts} products
+          Displaying page {navigation?.current} of {navigation?.pages} pages
         </div>
-        {currentProducts.map((product) => (
+        {products.map((product) => (
           <Product product={product} />
         ))}
-      </div>
-
-      <div className="pagination">
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {Math.ceil(products.length / itemsPerPage)}
-        </span>
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage * itemsPerPage >= products.length}
-        >
-          Next
-        </button>
       </div>
     </div>
   );
