@@ -1,0 +1,122 @@
+/* General layout for the product tile */
+.product-tile {
+  position: relative;
+  display: flex;
+  flex-direction: row; /* Arrange items in a row */
+  align-items: flex-start; /* Align items to the top */
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: height 0.3s ease, padding 0.3s ease;
+  background-color: white;
+  padding: 20px;
+  margin: 20px auto;
+  width: 600px; /* Increase width to accommodate both image and text */
+}
+
+.edit-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: rgb(98, 98, 98);
+  background-color: transparent;
+  border: none;
+  font-size: 0.9em;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.product-tile:hover .edit-button {
+  opacity: 1;
+}
+
+.product-tile.collapsed {
+  padding: 20px 20px 12px; /* Reduce padding when collapsed */
+  max-height: 300px; /* Set a smaller height when collapsed */
+}
+
+/* Product image styling */
+.product-image {
+  width: 150px; /* Adjust image size */
+  height: auto;
+  object-fit: cover;
+  margin-right: 16px; /* Space between image and text */
+  border-radius: 8px;
+}
+
+/* Product content section */
+.product-content {
+  flex: 1;
+  text-align: left; /* Align text to the left */
+}
+
+/* Title of the product */
+.product-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+/* Ellipsis for collapsed state */
+.ellipsis {
+  color: #888;
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-top: 8px;
+  transition: color 0.2s ease;
+}
+
+.ellipsis:hover {
+  color: #007BFF;
+}
+
+/* Category styling */
+.product-category {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Brand and description - visible when expanded */
+.product-brand,
+.product-description {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Price styling */
+.product-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Quantity input */
+.product-quantity {
+  display: flex;
+  align-items: center;
+}
+
+.product-quantity label {
+  margin-right: 8px;
+  font-size: 1rem;
+}
+
+.product-quantity input {
+  width: 60px;
+  padding: 5px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.available {
+  margin-left: 8px;
+  font-size: 0.9rem;
+  color: #666;
+}
