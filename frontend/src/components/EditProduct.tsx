@@ -55,10 +55,12 @@ const EditProduct = ({ productId }: { productId: string }) => {
 
   // Fetch product data from the backend
   useEffect(() => {
-    axios.get(`http://localhost:8080/products/${productId}`).then((res) => {
-      setProduct(res.data); // set the fetched product data to state
-      setLoading(false); // set loading to false after data is fetched
-    });
+    axios
+      .get(process.env.REACT_APP_API_BASE_URI + `/products/${productId}`)
+      .then((res) => {
+        setProduct(res.data); // set the fetched product data to state
+        setLoading(false); // set loading to false after data is fetched
+      });
   }, [productId]);
 
   // Handle input changes for each product field, taken as user input
@@ -75,7 +77,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
 
     try {
       const response = await axios.patch(
-        `http://localhost:8080/products/${productId}`,
+        process.env.REACT_APP_API_BASE_URI + `/products/${productId}`,
         {
           name: product.name,
           price: product.price,
