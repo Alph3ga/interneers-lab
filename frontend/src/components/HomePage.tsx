@@ -54,7 +54,7 @@ const HomePage = () => {
 
     try {
       const response = await axios.get<ProductListResponse>(
-        "http://localhost:8080/products",
+        process.env.REACT_APP_API_BASE_URI + "/products",
         {
           params: { start, limit },
         },
@@ -75,7 +75,7 @@ const HomePage = () => {
 
     try {
       const response = await axios.get<ProductListResponse>(
-        "http://localhost:8080" + URI,
+        process.env.REACT_APP_API_BASE_URI + URI,
       );
       setProducts(response.data.data); // Update products
       setNavigation(response.data.navigation); // Update navigation
