@@ -32,35 +32,31 @@ const HomePage = () => {
   // Error message state
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProducts = async (start?: number, limit: number = LIMIT) => {
-    setLoading(true);
-    setError(null); // Clear previous errors
-
-    try {
-      const response = await axios.get<ProductListResponse>(
-        process.env.REACT_APP_API_BASE_URI + "/products",
-        {
-          params: { start, limit },
-        },
-      );
-      setProducts(response.data.data); // Set fetched products
-      setNavigation(response.data.navigation); // Set pagination info
-    } catch (err) {
-      setError("Failed to fetch products."); // Handle error
-    } finally {
-      setLoading(false); // Stop loading
-    }
-  };
-
-  // Fetch based on URi
-  const fetchProductsURI = async (URI: string) => {
+  // fetch products from the GET api at `/products`
+  const fetchProducts = async (
+    cursor?: string,
+    start?: number,
+    limit: number = LIMIT,
+  ) => {
     setLoading(true);
     setError(null);
 
+    var response;
+
     try {
-      const response = await axios.get<ProductListResponse>(
-        process.env.REACT_APP_API_BASE_URI + URI,
-      );
+      if (cursor !== undefined) {
+        // If cursor (navigation URI) is given, use that
+        response = await axios.get<ProductListResponse>(
+          process.env.REACT_APP_API_BASE_URI + cursor,
+        );
+      } else {
+        response = await axios.get<ProductListResponse>( // else use start and limit
+          process.env.REACT_APP_API_BASE_URI + "/products",
+          {
+            params: { start, limit },
+          },
+        );
+      }
       setProducts(response.data.data); // Update products
       setNavigation(response.data.navigation); // Update navigation
     } catch (err) {
@@ -78,7 +74,7 @@ const HomePage = () => {
   // Go to the next page if available
   const handleNextPage = () => {
     if (navigation?.next) {
-      fetchProductsURI(navigation.next);
+      fetchProducts(navigation.next);
     }
     window.scrollTo(0, 0); // Scroll to top
   };
@@ -86,7 +82,7 @@ const HomePage = () => {
   // Go to the previous page if available
   const handlePrevPage = () => {
     if (navigation?.prev) {
-      fetchProductsURI(navigation.prev);
+      fetchProducts(navigation.prev);
     }
     window.scrollTo(0, 0); // Scroll to top
   };
