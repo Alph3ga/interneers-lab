@@ -17,6 +17,8 @@ from src.models.product import create_product, Product
 
 from mongoengine.errors import DoesNotExist, ValidationError
 
+from src.services.product_service import ProductService
+
 
 def product_endpoint(request: HttpRequest, request_id: str= None):
     """
@@ -118,9 +120,8 @@ def get_product_paginated(request: HttpRequest):
 
     Args:
         request: An HttpRequest instance created by django. Query params can be used to specify
-        pagination attributes for collection request. 'start' denotes the offset of the page,
-        which must be a valid product id. 'limit' denotes the maximum number of products in a 
-        page. 'limit' cannot be more than 250.
+        pagination attributes for collection request. 'start' denotes the offset of the page. 
+        'limit' denotes the maximum number of products in a page. 'limit' cannot be more than 250.
     
     Returns:
         JsonResponse instance, with payload containing json representation of requested object.
@@ -158,9 +159,17 @@ def get_product_paginated(request: HttpRequest):
         suggestion= "Resubmit request with smaller limit"
         return generate_error_response(request, 400, details, suggestion)
 
-    # Find the index in the list to start from (if the ID exists)
+    data= ProductService.get_product_filtered(
+        name= request.GET.get("name", ""),
+        category= request.GET.get("category", ""),
+        brand= request.GET.get("brand", ""),
+        price_less_than_e= int(request.GET.get("price_less_than_e", "-1")),
+        price_greater_than_e= int(request.GET.get("price_greater_than_e", "-1")),
+        quantity_less_than_e= int(request.GET.get("quantity_less_than_e", "-1")),
+        quantity_greater_than_e= int(request.GET.get("quantity_greater_than_e", "-1")),
+    )
 
-    num_products= Product.objects.count()
+    num_products= data.count()
 
     # Range ends at end_index-1
     end_index= start_index+ limit if start_index+limit<num_products else num_products
@@ -178,8 +187,7 @@ def get_product_paginated(request: HttpRequest):
             fields= '__all__'
 
     response= JsonResponse({
-        "data": [TestSerializer(prod).data for prod in  \
-            Product.objects[start_index:end_index]],
+        "data":json.loads(data[start_index:end_index].to_json()),
         "navigation":{
             "self": f"{request.path}?start={start_index}&limit={limit}",
             "next": f"{request.path}?start={end_index}&limit={limit}" \
