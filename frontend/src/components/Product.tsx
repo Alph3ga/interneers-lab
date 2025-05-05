@@ -2,18 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "styles/styles.css";
 
-interface ProductProps {
-  product: {
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-    description: string;
-    category: string;
-    brand: string;
-    image: string;
-  };
-}
+import { ProductDataWithImage } from "interfaces";
+
+type ProductProps = { product: ProductDataWithImage };
 
 const Product: React.FC<ProductProps> = ({ product }) => {
   // State to track if details are expanded
