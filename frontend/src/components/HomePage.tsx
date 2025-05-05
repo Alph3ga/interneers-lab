@@ -5,6 +5,7 @@ import ProductList from "./ProductList";
 import "styles/homepage.css";
 
 import { ProductData, Navigation } from "interfaces";
+import SearchBar from "./Search";
 
 interface ProductListResponse {
   data: ProductData[];
@@ -95,6 +96,7 @@ const HomePage = () => {
 
   return (
     <div>
+      <SearchBar />
       {loading && <p>Loading...</p>}
       {/* Loading indicator, shown conditionally */}
       {error && <p>{error}</p>} {/* Error message, shown conditionally */}
