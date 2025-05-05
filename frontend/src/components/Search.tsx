@@ -11,13 +11,48 @@ import {
   Stack,
   Button,
 } from "@mui/material";
+import axios from "axios";
 
 const SearchBarWithAdvanced: React.FC = () => {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [basicSearch, setBasicSearch] = useState("");
+  const [name, setName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [category, setCategory] = useState("");
   const [enablePrice, setEnablePrice] = useState(false);
   const [enableQuantity, setEnableQuantity] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 100000]);
-  const [quantityRange, setQuantityRange] = useState([0, 10000]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [quantityRange, setQuantityRange] = useState([0, 500]);
+
+  const handleSearch = async () => {
+    const params: any = {};
+
+    if (!showAdvanced) {
+      if (basicSearch) params.name = basicSearch;
+    } else {
+      if (name) params.name = name;
+      if (brand) params.brand = brand;
+      if (category) params.category = category;
+      if (enablePrice) {
+        params.price_greater_than_e = priceRange[0];
+        params.price_less_than_e = priceRange[1];
+      }
+      if (enableQuantity) {
+        params.quantity_greater_than_e = quantityRange[0];
+        params.quantity_less_than_e = quantityRange[1];
+      }
+    }
+
+    try {
+      const response = await axios.get(
+        process.env.REACT_APP_API_BASE_URI + "/products",
+        { params },
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Box mt={4}>
@@ -41,6 +76,7 @@ const SearchBarWithAdvanced: React.FC = () => {
               </InputAdornment>
             ),
           }}
+          onChange={(e) => setBasicSearch(e.target.value)}
         />
       </Box>
 
@@ -49,9 +85,21 @@ const SearchBarWithAdvanced: React.FC = () => {
         <Box mt={2} display="flex" justifyContent="center">
           <Box width="40vw">
             <Stack spacing={2}>
-              <TextField label="Name" fullWidth />
-              <TextField label="Brand" fullWidth />
-              <TextField label="Category" fullWidth />
+              <TextField
+                label="Name"
+                fullWidth
+                onChange={(e) => setName(e.target.value)}
+              />
+              <TextField
+                label="Brand"
+                fullWidth
+                onChange={(e) => setBrand(e.target.value)}
+              />
+              <TextField
+                label="Category"
+                fullWidth
+                onChange={(e) => setCategory(e.target.value)}
+              />
 
               <Typography>Filter by Price:</Typography>
               <Box
@@ -66,7 +114,7 @@ const SearchBarWithAdvanced: React.FC = () => {
                   valueLabelDisplay="on"
                   disabled={!enablePrice}
                   min={0}
-                  max={100000}
+                  max={10000}
                   sx={{
                     width: "35vw",
                     "& .MuiSlider-valueLabel": {
@@ -104,7 +152,7 @@ const SearchBarWithAdvanced: React.FC = () => {
                   valueLabelDisplay="on"
                   disabled={!enableQuantity}
                   min={0}
-                  max={10000}
+                  max={500}
                   sx={{
                     width: "35vw",
                     "& .MuiSlider-valueLabel": {
@@ -134,7 +182,7 @@ const SearchBarWithAdvanced: React.FC = () => {
       </Collapse>
       {/* Search button */}
       <Box display="flex" justifyContent="center" mt={2}>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={handleSearch}>
           Search
         </Button>
       </Box>
