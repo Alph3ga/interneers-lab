@@ -1,11 +1,18 @@
 from src.models.product import Product  # Assuming the Product model is in models/product.py
 
+from rapidfuzz import fuzz, process
+
+from mongoengine import QuerySet
+
 #pylint: disable=no-member
 
 class ProductService:
     """
     Service layer for managing products in the database.
     """
+
+    product_names= []
+    fetch_valid= False
 
     @staticmethod
     def create_product(data: dict) -> Product:
@@ -27,6 +34,7 @@ class ProductService:
             description=data.get("description", "")
         )
         product.save()
+        ProductService.fetch_valid= True
         return product
 
     @staticmethod
@@ -78,6 +86,7 @@ class ProductService:
         """
         product = Product.objects.get(id=product_id)
         product.delete()
+        ProductService.fetch_valid= False
 
     @staticmethod
     def modify_stock(product_id: str, amount: int) -> int:
@@ -137,6 +146,33 @@ class ProductService:
         return product.set_price(amount)
 
     @staticmethod
+    def get_product_by_name(name: str, score_limit= 60):
+        """
+        Retrieves products with names similar to the provided input using fuzzy matching.
+
+        If the internal product name list cache is invalidated, it fetches all distinct product
+        names from the database and stores them for future fuzzy matching.
+
+        Args:
+            name (str): The product name to search for.
+
+        Returns:
+            QuerySet: A queryset of Product objects whose names closely match the input.
+        """
+
+        if not ProductService.fetch_valid:
+            ProductService.product_names= Product.objects.distinct("name")
+            ProductService.fetch_valid= True
+        choices= process.extract(name, ProductService.product_names, scorer=fuzz.partial_ratio, \
+            score_cutoff= score_limit)
+        print(choices)
+        
+        choice_names= [choice[0] for choice in choices]  # Get just the names (discard match ratios)
+        return Product.objects(name__in=choice_names)
+        
+
+
+    @staticmethod
     def get_product_filtered(name: str, category: str, brand: str, price_less_than_e: int, \
         price_greater_than_e: int, quantity_less_than_e: int, quantity_greater_than_e: int):
         """
@@ -158,7 +194,7 @@ class ProductService:
         data= Product.objects
 
         if not name == "":
-            data= data.filter(name= name)
+            data= ProductService.get_product_by_name(name= name)
         if not brand == "":
             data= data.filter(brand= brand)
         if not category == "":
