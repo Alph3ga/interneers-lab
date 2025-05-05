@@ -6,7 +6,6 @@ import {
   InputAdornment,
   Slider,
   Checkbox,
-  FormControlLabel,
   Collapse,
   Stack,
   Button,
@@ -26,6 +25,8 @@ const SearchBarWithAdvanced: React.FC = () => {
 
   const handleSearch = async () => {
     const params: any = {};
+
+    params.limit = 10;
 
     if (!showAdvanced) {
       if (basicSearch) params.name = basicSearch;
