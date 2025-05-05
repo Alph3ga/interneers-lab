@@ -215,8 +215,7 @@ def get_product_paginated(request: HttpRequest):
             prev_URI+= f"&{key}={quote(value) if isinstance(value,str) else value }"
 
     response= JsonResponse({
-        "data": [TestSerializer(prod).data for prod in  \
-            Product.objects[start_index:end_index]],
+        "data":json.loads(data[start_index:end_index].to_json()),
         "navigation":{
             "self": self_URI,
             "next": next_URI,
