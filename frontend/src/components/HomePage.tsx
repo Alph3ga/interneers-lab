@@ -4,26 +4,10 @@ import ProductList from "./ProductList";
 
 import "styles/homepage.css";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  brand: string;
-  description: string;
-  category: string;
-}
-
-interface Navigation {
-  self: string;
-  next: string | null;
-  prev: string | null;
-  pages: number;
-  current: number;
-}
+import { ProductData, Navigation } from "interfaces";
 
 interface ProductListResponse {
-  data: Product[];
+  data: ProductData[];
   navigation: Navigation;
 }
 
@@ -37,7 +21,7 @@ const HomePage = () => {
   const LIMIT = 10; // Number of products per page
 
   // State to hold the current list of products
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductData[]>([]);
 
   // State to manage pagination navigation data, fetched from backend
   const [navigation, setNavigation] = useState<Navigation | null>(null);

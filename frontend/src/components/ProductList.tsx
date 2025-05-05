@@ -2,27 +2,10 @@ import React from "react";
 import Product from "./Product";
 import "styles/productlist.css";
 
-interface ProductData {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  description: string;
-  category: string;
-  brand: string;
-  image: string;
-}
-
-interface Navigation {
-  self: string;
-  next: string | null;
-  prev: string | null;
-  pages: number;
-  current: number;
-}
+import { ProductDataWithImage, Navigation } from "interfaces";
 
 interface ProductListProps {
-  products: ProductData[];
+  products: ProductDataWithImage[];
   navigation: Navigation | null;
 }
 

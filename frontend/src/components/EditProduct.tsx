@@ -12,15 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  description: string;
-  category: string;
-  brand: string;
-}
+import { ProductData } from "interfaces";
 
 // This is the list of all valid category labels
 const categories = [
@@ -43,7 +35,7 @@ const categories = [
 
 const EditProduct = ({ productId }: { productId: string }) => {
   // State to hold the product data
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<ProductData | null>(null);
 
   // State to indicate whether the product fetch is still loading
   const [loading, setLoading] = useState<Boolean>(true);
@@ -64,7 +56,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
   }, [productId]);
 
   // Handle input changes for each product field, taken as user input
-  const handleChange = (field: keyof Product, value: string | number) => {
+  const handleChange = (field: keyof ProductData, value: string | number) => {
     setProduct((prev) => (prev ? { ...prev, [field]: value } : prev)); // update specific field in the product object
   };
 
