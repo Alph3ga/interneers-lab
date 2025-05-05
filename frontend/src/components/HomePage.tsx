@@ -96,7 +96,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <SearchBar />
+      <SearchBar setProducts={setProducts} setNavigation={setNavigation} />
       {loading && <p>Loading...</p>}
       {/* Loading indicator, shown conditionally */}
       {error && <p>{error}</p>} {/* Error message, shown conditionally */}

@@ -12,7 +12,17 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const SearchBarWithAdvanced: React.FC = () => {
+import { ProductData, Navigation } from "interfaces";
+
+interface SearchBarProps {
+  setNavigation: React.Dispatch<React.SetStateAction<Navigation | null>>;
+  setProducts: React.Dispatch<React.SetStateAction<ProductData[]>>;
+}
+
+const SearchBarWithAdvanced: React.FC<SearchBarProps> = ({
+  setNavigation,
+  setProducts,
+}) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [basicSearch, setBasicSearch] = useState("");
   const [name, setName] = useState("");
@@ -49,7 +59,8 @@ const SearchBarWithAdvanced: React.FC = () => {
         process.env.REACT_APP_API_BASE_URI + "/products",
         { params },
       );
-      console.log(response.data);
+      setProducts(response.data.data);
+      setNavigation(response.data.navigation);
     } catch (error) {
       console.error(error);
     }
