@@ -9,6 +9,7 @@ Rest are functions that implement specific method endpoints, or helper functions
 
 import json
 import math
+from urllib.parse import quote
 from django.http import HttpRequest, JsonResponse
 from rest_framework_mongoengine import serializers
 from src.utils.error import generate_error_response
@@ -159,14 +160,24 @@ def get_product_paginated(request: HttpRequest):
         suggestion= "Resubmit request with smaller limit"
         return generate_error_response(request, 400, details, suggestion)
 
+    params= {
+        "name": request.GET.get("name", ""),
+        "category": request.GET.get("category", ""),
+        "brand": request.GET.get("brand", ""),
+        "price_less_than_e": int(request.GET.get("price_less_than_e", "-1")),
+        "price_greater_than_e": int(request.GET.get("price_greater_than_e", "-1")),
+        "quantity_less_than_e": int(request.GET.get("quantity_less_than_e", "-1")),
+        "quantity_greater_than_e": int(request.GET.get("quantity_greater_than_e", "-1")),
+    }
+
     data= ProductService.get_product_filtered(
-        name= request.GET.get("name", ""),
-        category= request.GET.get("category", ""),
-        brand= request.GET.get("brand", ""),
-        price_less_than_e= int(request.GET.get("price_less_than_e", "-1")),
-        price_greater_than_e= int(request.GET.get("price_greater_than_e", "-1")),
-        quantity_less_than_e= int(request.GET.get("quantity_less_than_e", "-1")),
-        quantity_greater_than_e= int(request.GET.get("quantity_greater_than_e", "-1")),
+        name= params["name"],
+        category= params["category"],
+        brand= params["brand"],
+        price_less_than_e= params["price_less_than_e"],
+        price_greater_than_e= params["price_greater_than_e"],
+        quantity_less_than_e= params["quantity_less_than_e"],
+        quantity_greater_than_e= params["quantity_greater_than_e"],
     )
 
     num_products= data.count()
@@ -181,19 +192,29 @@ def get_product_paginated(request: HttpRequest):
     # i.e., the product with the lowest existing id
     prev_index= start_index- limit if start_index>=limit else -1
 
-    class TestSerializer(serializers.DocumentSerializer):
-        class Meta:
-            model= Product
-            fields= '__all__'
+    self_URI= f"{request.path}?start={start_index}&limit={limit}"
+    next_URI= f"{request.path}?start={end_index}&limit={limit}" if end_index<num_products else None
+    prev_URI= f"{request.path}?start={prev_index}&limit={limit}" if prev_index>-1 else None
+
+    for key, value in params.items():
+        if key in ["name", "category", "brand"]:
+            if value=="":
+                continue
+        elif value<0:
+            continue
+
+        self_URI+= f"&{key}={quote(value) if isinstance(value,str) else value }"
+        if next_URI is not None:
+            next_URI+= f"&{key}={quote(value) if isinstance(value,str) else value}"
+        if prev_URI is not None:
+            prev_URI+= f"&{key}={quote(value) if isinstance(value,str) else value }"
 
     response= JsonResponse({
         "data":json.loads(data[start_index:end_index].to_json()),
         "navigation":{
-            "self": f"{request.path}?start={start_index}&limit={limit}",
-            "next": f"{request.path}?start={end_index}&limit={limit}" \
-                if end_index<num_products else None,
-            "prev": f"{request.path}?start={prev_index}&limit={limit}" \
-                if prev_index>-1 else None,
+            "self": self_URI,
+            "next": next_URI,
+            "prev": prev_URI,
             "pages": pages,
             "current": math.ceil((start_index+1)/limit)
         }
