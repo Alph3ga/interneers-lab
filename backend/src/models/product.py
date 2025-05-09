@@ -116,7 +116,7 @@ class Product(Document):
         Raises:
             KeyError: If an invalid field is included in the update.
         """
-        allowed_fields = {"name", "price", "brand", "quantity", "description"}
+        allowed_fields = {"name", "price", "brand", "quantity", "description", "category"}
         for key, value in data.items():
             if key not in allowed_fields:
                 raise KeyError(f"Field {key} is not a valid field.")

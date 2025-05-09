@@ -1,28 +1,26 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "styles/styles.css";
 
-interface ProductProps {
-  product: {
-    name: string;
-    price: number;
-    quantity: number;
-    description: string;
-    category: string;
-    brand: string;
-    image: string;
-  };
-}
+import { ProductDataWithImage } from "interfaces";
+
+type ProductProps = { product: ProductDataWithImage };
 
 const Product: React.FC<ProductProps> = ({ product }) => {
+  // State to track if details are expanded
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const toggleDetails = () => {
     setExpanded((prev) => !prev);
   };
 
+  // Required for programmatic navigation
+  const navigate = useNavigate();
+
+  // Redirects to the edit product page on clicking the button
   const handleEdit = () => {
-    console.log("Edit page requested on product ", product.name);
-    // Route to edit page
+    const id = product.id;
+    navigate("/product/" + id);
   };
 
   return (
