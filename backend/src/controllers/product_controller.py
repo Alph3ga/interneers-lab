@@ -216,7 +216,7 @@ def get_product_paginated(request: HttpRequest):
 
     response= JsonResponse({
         "data":[TestSerializer(prod).data for prod in  \
-            Product.objects[start_index:end_index]],
+            data[start_index:end_index]],
         "navigation":{
             "self": self_URI,
             "next": next_URI,
