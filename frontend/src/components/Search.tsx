@@ -9,17 +9,36 @@ import {
   Collapse,
   Stack,
   Button,
+  Autocomplete,
 } from "@mui/material";
 import axios from "axios";
 
 import { ProductData, Navigation } from "interfaces";
+
+const CATEGORIES = [
+  "Electronics",
+  "Home & Kitchen",
+  "Health & Personal Care",
+  "Fashion & Apparel",
+  "Books & Stationery",
+  "Sports & Outdoors",
+  "Beauty & Cosmetics",
+  "Toys & Games",
+  "Automotive",
+  "Office Supplies",
+  "Pet Supplies",
+  "Baby Products",
+  "Groceries",
+  "Tools & Hardware",
+  "Art & Crafts",
+];
 
 interface SearchBarProps {
   setNavigation: React.Dispatch<React.SetStateAction<Navigation | null>>;
   setProducts: React.Dispatch<React.SetStateAction<ProductData[]>>;
 }
 
-const SearchBarWithAdvanced: React.FC<SearchBarProps> = ({
+const SearchBar: React.FC<SearchBarProps> = ({
   setNavigation,
   setProducts,
 }) => {
@@ -27,7 +46,7 @@ const SearchBarWithAdvanced: React.FC<SearchBarProps> = ({
   const [basicSearch, setBasicSearch] = useState("");
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<String | null>("");
   const [enablePrice, setEnablePrice] = useState(false);
   const [enableQuantity, setEnableQuantity] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -107,10 +126,14 @@ const SearchBarWithAdvanced: React.FC<SearchBarProps> = ({
                 fullWidth
                 onChange={(e) => setBrand(e.target.value)}
               />
-              <TextField
-                label="Category"
+              <Autocomplete
+                disablePortal
+                options={CATEGORIES}
                 fullWidth
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(_, newValue) => setCategory(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" />
+                )}
               />
 
               <Typography>Filter by Price:</Typography>
@@ -202,4 +225,4 @@ const SearchBarWithAdvanced: React.FC<SearchBarProps> = ({
   );
 };
 
-export default SearchBarWithAdvanced;
+export default SearchBar;
